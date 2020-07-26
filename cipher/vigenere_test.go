@@ -37,7 +37,6 @@ func areTabulaRectasEqual(a, b [][]rune) bool {
 	if len(a) != len(b) {
 		return false
 	}
-
 	for i, row := range a {
 		if !areRunesEqual(row, b[i]) {
 			return false
@@ -45,4 +44,22 @@ func areTabulaRectasEqual(a, b [][]rune) bool {
 	}
 
 	return true
+}
+
+func TestEncrypt(t *testing.T) {
+	cases := []struct {
+		characters, text, key, expected string
+	}{
+		{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "COKOLWIEK", "KEY", "MSIYPUSII"},
+		{"ABCDEFGHIJKLMNOPRSTUWYZ", "Pudzianowski", "MARIUSZ", "Euuhesmdwkte"},
+		{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "MICHIGAN TECHNOLOGICAL UNIVERSITY", "HOUGHTON", "TWWNPZOA ASWNUHZBNWWGS NBVCSLYPMM"},
+	}
+
+	for _, c := range cases {
+		vigenere := New(c.characters, c.key)
+		encrypted := vigenere.Encrypt(c.text)
+		if encrypted != c.expected {
+			t.Errorf("Not equal!\nExpected: %q\nGiven: %q\n", c.expected, encrypted)
+		}
+	}
 }
