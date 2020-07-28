@@ -64,7 +64,7 @@ func (v Vigenere) Encrypt(plainText string) string {
 			lower = true
 		}
 
-		e := v.getChar(textChar, keyChar)
+		e := v.getEncryptedChar(textChar, keyChar)
 		if lower {
 			e = unicode.ToLower(e)
 		}
@@ -74,19 +74,72 @@ func (v Vigenere) Encrypt(plainText string) string {
 	return string(encrypted)
 }
 
-func (v Vigenere) getChar(textChar, keyChar rune) rune {
-	sliceIndex, err := atIndex(v.Alphabet, keyChar)
-	if err != nil {
-		panic(fmt.Sprintf("Key character: %s is not present in alphabet: %q", string(keyChar), v.Alphabet))
-	}
-
-	row := v.TabulaRecta[sliceIndex]
+func (v Vigenere) getEncryptedChar(textChar, keyChar rune) rune {
+	rowIndex := getRowIndex(v.Alphabet, keyChar)
+	row := v.TabulaRecta[rowIndex]
 	charIndex, err := atIndex(v.Alphabet, textChar)
 	if err != nil {
 		panic(fmt.Sprintf("Text char: %s is not present in alphabet: %q", string(textChar), v.Alphabet))
 	}
 
 	return row[charIndex]
+}
+
+func getRowIndex(alphabet []rune, keyChar rune) int {
+	rowIndex, err := atIndex(alphabet, keyChar)
+	if err != nil {
+		panic(fmt.Sprintf("Key character: %s is not present in alphabet: %q", string(keyChar), alphabet))
+	}
+
+	return rowIndex
+}
+
+// Decrypt text with key and tabula recta
+func (v Vigenere) Decrypt(encryptedText string) string {
+	key := []rune(v.key)
+	keyLength := len(key)
+	encrypted := []rune(encryptedText)
+
+	plain := make([]rune, len(encrypted))
+	spaceCounter := 0
+
+	for i, encryptedChar := range encrypted {
+		keyChar := key[(i-spaceCounter)%keyLength]
+
+		switch encryptedChar {
+		case ' ', ',', '.', '!', '?':
+			plain[i] = encryptedChar
+			spaceCounter++
+			continue
+		}
+
+		lower := false
+		if isLower(encryptedChar) {
+			encryptedChar = unicode.ToUpper(encryptedChar)
+			lower = true
+		}
+
+		e := v.getDecryptedChar(encryptedChar, keyChar)
+		if lower {
+			e = unicode.ToLower(e)
+		}
+
+		plain[i] = e
+	}
+
+	return string(plain)
+}
+
+func (v Vigenere) getDecryptedChar(encryptedChar, keyChar rune) rune {
+	rowIndex := getRowIndex(v.Alphabet, keyChar)
+	row := v.TabulaRecta[rowIndex]
+
+	decryptedIndex, err := atIndex(row, encryptedChar)
+	if err != nil {
+		panic(fmt.Sprintf("Encrypted character: %s is not present in alphabet: %q", string(keyChar), v.Alphabet))
+	}
+
+	return v.Alphabet[decryptedIndex]
 }
 
 func atIndex(t []rune, item rune) (int, error) {

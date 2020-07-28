@@ -46,21 +46,33 @@ func areTabulaRectasEqual(a, b [][]rune) bool {
 	return true
 }
 
-func TestEncrypt(t *testing.T) {
-	cases := []struct {
-		characters, text, key, expected string
-	}{
-		{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "COKOLWIEK", "KEY", "MSIYPUSII"},
-		{"ABCDEFGHIJKLMNOPRSTUWYZ", "Pudzianowski", "MARIUSZ", "Euuhesmdwkte"},
-		{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "MICHIGAN TECHNOLOGICAL UNIVERSITY", "HOUGHTON", "TWWNPZOA ASWNUHZBNWWGS NBVCSLYPMM"},
-		{"AĄBCDEFGHIJKLMNOPQRSTUVWXYZŻ", "Zjedzą go sarenki, tak jak poprzedniego!", "SARNIEŻNIWO", "Qjwrgf fą awexnąw, ąej xif cfphlnimwnbb!"},
-	}
+type encryptDecryptCase struct {
+	characters, decrypted, key, encrypted string
+}
 
-	for _, c := range cases {
+var encryptDecryptCases = []encryptDecryptCase{
+	{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "COKOLWIEK", "KEY", "MSIYPUSII"},
+	{"ABCDEFGHIJKLMNOPRSTUWYZ", "Pudzianowski", "MARIUSZ", "Euuhesmdwkte"},
+	{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "MICHIGAN TECHNOLOGICAL UNIVERSITY", "HOUGHTON", "TWWNPZOA ASWNUHZBNWWGS NBVCSLYPMM"},
+	{"AĄBCDEFGHIJKLMNOPQRSTUVWXYZŻ", "Zjedzą go sarenki, tak jak poprzedniego!", "SARNIEŻNIWO", "Qjwrgf fą awexnąw, ąej xif cfphlnimwnbb!"},
+}
+
+func TestEncrypt(t *testing.T) {
+	for _, c := range encryptDecryptCases {
 		vigenere := New(c.characters, c.key)
-		encrypted := vigenere.Encrypt(c.text)
-		if encrypted != c.expected {
-			t.Errorf("Not equal!\nExpected: %q\nGiven: %q\n", c.expected, encrypted)
+		encrypted := vigenere.Encrypt(c.decrypted)
+		if encrypted != c.encrypted {
+			t.Errorf("Not equal!\nExpected: %q\nGiven: %q\n", c.encrypted, encrypted)
+		}
+	}
+}
+
+func TestDecrypt(t *testing.T) {
+	for _, c := range encryptDecryptCases {
+		vigenere := New(c.characters, c.key)
+		decrypted := vigenere.Decrypt(c.encrypted)
+		if decrypted != c.decrypted {
+			t.Errorf("Not equal!\nExpected: %q\nGiven: %q\n", c.decrypted, decrypted)
 		}
 	}
 }
