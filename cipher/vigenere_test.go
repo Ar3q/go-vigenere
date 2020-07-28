@@ -53,6 +53,7 @@ func TestEncrypt(t *testing.T) {
 		{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "COKOLWIEK", "KEY", "MSIYPUSII"},
 		{"ABCDEFGHIJKLMNOPRSTUWYZ", "Pudzianowski", "MARIUSZ", "Euuhesmdwkte"},
 		{"ABCDEFGHIJKLMNOPQRSTUVWXYZ", "MICHIGAN TECHNOLOGICAL UNIVERSITY", "HOUGHTON", "TWWNPZOA ASWNUHZBNWWGS NBVCSLYPMM"},
+		{"AĄBCDEFGHIJKLMNOPQRSTUVWXYZŻ", "Zjedzą go sarenki, tak jak poprzedniego!", "SARNIEŻNIWO", "Qjwrgf fą awexnąw, ąej xif cfphlnimwnbb!"},
 	}
 
 	for _, c := range cases {

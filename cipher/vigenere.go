@@ -6,12 +6,14 @@ import (
 	"unicode"
 )
 
+// Vigenere stores generated tabula recta and passed key
 type Vigenere struct {
 	Alphabet    []rune
 	TabulaRecta [][]rune
 	key         string
 }
 
+// New creates new Vigenere with generated tabula recta
 func New(characters, key string) *Vigenere {
 	alphabet := []rune(characters)
 	tabulaRecta := generateTabulaRecta(alphabet)
@@ -37,34 +39,39 @@ func generateTabulaRecta(alphabet []rune) [][]rune {
 	return tabulaRecta
 }
 
+// Encrypt text with key and tabula recta
 func (v Vigenere) Encrypt(plainText string) string {
-	textLength := len(plainText)
-	keyLength := len(v.key)
-
 	text := []rune(plainText)
+	key := []rune(v.key)
+	keyLength := len(key)
 
-	encryped := make([]rune, textLength)
+	encrypted := make([]rune, len(text))
+	spaceCounter := 0
 
-	for i := 0; i < textLength; i++ {
-		keyChar := rune(v.key[i%keyLength])
-		textChar := text[i]
-		if textChar == ' ' {
-			encryped[i] = textChar
+	for i, textChar := range text {
+		keyChar := key[(i-spaceCounter)%keyLength]
+
+		switch textChar {
+		case ' ', ',', '.', '!', '?':
+			encrypted[i] = textChar
+			spaceCounter++
 			continue
 		}
+
 		lower := false
 		if isLower(textChar) {
 			textChar = unicode.ToUpper(textChar)
 			lower = true
 		}
+
 		e := v.getChar(textChar, keyChar)
 		if lower {
 			e = unicode.ToLower(e)
 		}
-		encryped[i] = e
+		encrypted[i] = e
 	}
 
-	return string(encryped)
+	return string(encrypted)
 }
 
 func (v Vigenere) getChar(textChar, keyChar rune) rune {
