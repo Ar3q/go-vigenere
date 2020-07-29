@@ -1,6 +1,6 @@
 # go-vigenere
 
-Simple terminal program for text encryption, decrytpion with Vigenere cipher
+Simple terminal program for text encryption, decryption with Vigenere cipher
 
 ## Using
 
@@ -18,7 +18,8 @@ go build
 Decrypted (original) text: PUDZIAN
 Encrypted text: PMGZADN
 
-./go-vigenere -t "Qjwrgf fą awexnąw, ąej xif cfphlnimwnbb!" -a AĄBCDEFGHIJKLMNOPQRSTUVWXYZŻ -k SARNIEŻNIWO -d
+./go-vigenere -t "Qjwrgf fą awexnąw, ąej xif cfphlnimwnbb!"  \
+-a AĄBCDEFGHIJKLMNOPQRSTUVWXYZŻ -k SARNIEŻNIWO -d
 Encrypted (original) text: Qjwrgf fą awexnąw, ąej xif cfphlnimwnbb!
 Decrypted text: Zjedzą go sarenki, tak jak poprzedniego!
 ```
