@@ -33,7 +33,6 @@ func checkFlags() {
 
 func main() {
 	flag.Parse()
-	fmt.Println(*key, *alphabet, *text, *encrypt, *decrypt)
 
 	checkFlags()
 
